@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using OneSignal_SendNotification.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +32,7 @@ namespace OneSignal_SendNotification.Helpers
         }
 
 
-        public void AddDevice()
+        public DeviceResultModel AddDevice(AddUserDeviceDTO model)
         {
             var request = WebRequest.Create("https://onesignal.com/api/v1/players") as HttpWebRequest;
 
@@ -42,21 +44,17 @@ namespace OneSignal_SendNotification.Helpers
             var serializer = new JavaScriptSerializer();
             var obj = new
             {
-                app_id = "173194d1-2b10-4b37-b0b9-2be61f6c90e1",
-                device_type = 0,
-                identifier = "",
-                language = "tr",
-                timezone = +3,
-                game_version = "1.0",
-                device_model = "iPhone 6S",
-                device_os = "10.3.2",
-                contents = new { en = "Test Notification" },
-                included_segments = new string[] { "All" }
+                app_id = model.app_id, //req.
+                device_type = model.device_type, //req.
+                identifier = model.identifier,
+                language = model.language,
+                timezone = model.timezone,
+                game_version = model.game_version,
+                device_model = model.device_model,
+                device_os = model.device_os
             };
             var param = serializer.Serialize(obj);
             byte[] byteArray = Encoding.UTF8.GetBytes(param);
-
-            string responseContent = null;
 
             try
             {
@@ -69,16 +67,20 @@ namespace OneSignal_SendNotification.Helpers
                 {
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
-                        responseContent = reader.ReadToEnd();
-                    }
+                        var result = JsonConvert.DeserializeObject<DeviceResultModel>(reader.ReadToEnd());
+                        return result;                         
+                    };
                 }
             }
 
-            catch (WebException ex)
+            catch (Exception)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return new DeviceResultModel()
+                {
+                    success = false,
+                    id = null
+                };
             }
-
         }
 
         public void SendtoAllSubscribers()

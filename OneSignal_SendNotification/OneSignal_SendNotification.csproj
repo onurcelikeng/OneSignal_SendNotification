@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Helpers\OneSignalHelper.cs" />
     <Compile Include="Models\AddUserDeviceDTO.cs" />
+    <Compile Include="Models\DeviceResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
