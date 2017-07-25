@@ -83,7 +83,7 @@ namespace OneSignal_SendNotification.Helpers
             }
         }
 
-        public void SendtoAllSubscribers()
+        public void SendtoAllSubscribers(string message)
         {
             var request = WebRequest.Create(BaseUrl) as HttpWebRequest;
 
@@ -96,7 +96,7 @@ namespace OneSignal_SendNotification.Helpers
             var obj = new
             {
                 app_id = "5eb5a37e-b458-11e3-ac11-000c2940e62c",
-                contents = new { en = "Test Notification" },
+                contents = new { en = message },
                 included_segments = new string[] { "All" }
             };
             var param = serializer.Serialize(obj);
@@ -126,7 +126,7 @@ namespace OneSignal_SendNotification.Helpers
             }
         }
 
-        public void SendToSpecificSegment()
+        public void SendToOnePerson(string message, string id)
         {
             var request = WebRequest.Create(BaseUrl) as HttpWebRequest;
 
@@ -139,9 +139,10 @@ namespace OneSignal_SendNotification.Helpers
             var obj = new
             {
                 app_id = "5eb5a37e-b458-11e3-ac11-000c2940e62c",
-                contents = new { en = "English Message" },
-                included_segments = new string[] { "Active Users" }
+                contents = new { en = message },
+                include_player_ids = new string[] { id }
             };
+
             var param = serializer.Serialize(obj);
             byte[] byteArray = Encoding.UTF8.GetBytes(param);
 
